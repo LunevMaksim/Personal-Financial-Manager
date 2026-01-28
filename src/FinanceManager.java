@@ -86,6 +86,52 @@ public class FinanceManager {
         }
     }
 
+    public void searchTransaction(Scanner scanner){
+        int num = menuForSearch(scanner);
+        switch (num){
+            case 1:
+                System.out.print("Введите категорию: ");
+                String category = scanner.nextLine().toLowerCase().trim();
+                for (int i = 0; i < getList().size(); i++) {
+                    if (getList().get(i).getCategory().equals(category)){
+                        System.out.println(getList().get(i));
+                    }
+                }
+                break;
+            case 2:
+                System.out.print("Введите тип транзакции: ");
+                String type = scanner.nextLine().toLowerCase().trim();
+                for (int i = 0; i < getList().size(); i++) {
+                    if (getList().get(i).getType().equals(type)){
+                        System.out.println(getList().get(i));
+                    }
+                }
+                break;
+        }
+    }
+
+    public int menuForSearch(Scanner scanner){
+        System.out.println("Поиск транзакций:");
+        System.out.println("1. По категории");
+        System.out.println("2. По типу (доход/расход)");
+        int num;
+        while (true){
+            try {
+                System.out.print("Введите номер для поиска: ");
+                num = scanner.nextInt();
+                if (num == 1 || num == 2){
+                    return num;
+                }
+                System.out.println("Неверный номер команды!");
+            } catch (InputMismatchException exception){
+                System.out.println("Ошибка! Введено не числовое значение");
+            }
+            finally {
+                scanner.nextLine();
+            }
+        }
+    }
+
     public List<Transaction> getList() {
         return list;
     }
