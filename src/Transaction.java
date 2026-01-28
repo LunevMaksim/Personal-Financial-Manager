@@ -66,7 +66,6 @@ public class Transaction {
                 ", Сумма: " + amount +
                 ", Тип: " + type.getRussianType() +
                 ", Категория: '" + category + '\'' +
-                ", Описание: '" + description + '\'' +
-                '}';
+                ", Описание: '" + description + '\'';
     }
 }

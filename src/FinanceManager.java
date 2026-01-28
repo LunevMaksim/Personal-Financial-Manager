@@ -16,19 +16,7 @@ public class FinanceManager {
 
         trans.setDate(LocalDateTime.now());
 
-        double amount;
-        while (true){
-            try {
-                System.out.print("Введите сумму: ");
-                amount = scanner.nextDouble();
-                break;
-            } catch (InputMismatchException exception){
-                System.out.println("Ошибка! Введено не числовое значение");
-            }
-            finally {
-                scanner.nextLine();
-            }
-        }
+        double amount = readDouble(scanner);
         trans.setAmount(amount);
 
 
@@ -67,27 +55,25 @@ public class FinanceManager {
             try {
                 System.out.print("Введите айди для удаления: ");
                 id = scanner.nextInt();
+                scanner.nextLine();
                 break;
             } catch (InputMismatchException exception){
                 System.out.println("Ошибка! Введено не числовое значение");
                 scanner.nextLine();
             }
         }
-        if (id < 1 || id > getList().size()){
-            System.out.println("Ошибка! Id нет в списке");
-            return;
-        }
-        boolean val = false;
-        for (int i = 0; i < getList().size(); i++) {
-            if (getList().get(i).getId() == id){
-                val = true;
-                getList().remove(getList().get(i));
-                System.out.println("Задача №" + id + " была удалена!" );
+        boolean found = false;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId() == id) {
+                list.remove(i);
+                found = true;
+                System.out.println("Транзакция с id " + id + " удалена!");
                 break;
             }
         }
-        if (!val){
-            System.out.println("Задача не найдена!");
+
+        if (!found) {
+            System.out.println("Транзакция с id " + id + " не найдена");
         }
     }
 
@@ -102,7 +88,7 @@ public class FinanceManager {
                 System.out.print("Введите категорию: ");
                 String category = scanner.nextLine().toLowerCase().trim();
                 for (int i = 0; i < getList().size(); i++) {
-                    if (getList().get(i).getCategory().equals(category)){
+                    if (getList().get(i).getCategory().equalsIgnoreCase(category)){
                         System.out.println(getList().get(i));
                     }
                 }
@@ -111,12 +97,26 @@ public class FinanceManager {
                 System.out.print("Введите тип транзакции: ");
                 String type = scanner.nextLine();
                 Type mayBeType = Type.fromType(type);
+                if (mayBeType == null) {
+                    System.out.println("Ошибка! Неправильный тип транзакции.");
+                    break;
+                }
                 for (int i = 0; i < getList().size(); i++) {
                     if (getList().get(i).getType().equals(mayBeType)){
                         System.out.println(getList().get(i));
                     }
                 }
                 break;
+        }
+    }
+
+    public void allTransaction(){
+        if (getList().isEmpty()){
+            System.out.println("Список транзакций пуст!");
+            return;
+        }
+        for(Transaction t: getList()){
+            System.out.println(t);
         }
     }
 
@@ -130,6 +130,7 @@ public class FinanceManager {
                 System.out.print("Введите номер для поиска: ");
                 num = scanner.nextInt();
                 if (num == 1 || num == 2){
+                    scanner.nextLine();
                     return num;
                 }
                 System.out.println("Неверный номер команды!");
@@ -137,6 +138,21 @@ public class FinanceManager {
                 System.out.println("Ошибка! Введено не числовое значение");
             }
             finally {
+                scanner.nextLine();
+            }
+        }
+    }
+
+    public double readDouble(Scanner scanner) {
+        double amount;
+        while (true) {
+            try {
+                System.out.print("Введите сумму: ");
+                amount = scanner.nextDouble();
+                return amount;
+            } catch (InputMismatchException exception) {
+                System.out.println("Ошибка! Введено не числовое значение");
+            } finally {
                 scanner.nextLine();
             }
         }
