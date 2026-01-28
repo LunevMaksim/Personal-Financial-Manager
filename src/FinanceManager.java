@@ -56,6 +56,35 @@ public class FinanceManager {
         System.out.println("Транзакция успешно добавлена!");
     }
 
+    public void removeTransaction(Scanner scanner){
+        int id;
+        while (true){
+            try {
+                System.out.print("Введите айди для удаления: ");
+                id = scanner.nextInt();
+                break;
+            } catch (InputMismatchException exception){
+                System.out.println("Ошибка! Введено не числовое значение");
+                scanner.nextLine();
+            }
+        }
+        if (id < 1 || id > getList().size()){
+            System.out.println("Ошибка! Id нет в списке");
+            return;
+        }
+        boolean val = false;
+        for (int i = 0; i < getList().size(); i++) {
+            if (getList().get(i).getId() == id){
+                val = true;
+                getList().remove(getList().get(i));
+                System.out.println("Задача №" + id + " была удалена!" );
+                break;
+            }
+        }
+        if (!val){
+            System.out.println("Задача не найдена!");
+        }
+    }
 
     public List<Transaction> getList() {
         return list;
