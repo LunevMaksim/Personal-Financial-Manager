@@ -1,14 +1,14 @@
 public enum Type {
     INCOME("Доход"),
     EXPENSE("Расход");
-    private final String type;
+    private final String russianType;
 
     Type(String type) {
-        this.type = type;
+        this.russianType = type;
     }
 
-    public String getType() {
-        return type;
+    public String getRussianType() {
+        return russianType;
     }
 
     public static Type fromType(String str) {
@@ -17,7 +17,7 @@ public enum Type {
         String normalized = str.trim().toLowerCase();
 
         for (Type status : Type.values()) {
-            if (status.getType().toLowerCase().equals(normalized)) {
+            if (status.getRussianType().toLowerCase().equals(normalized)) {
                 return status;
             }
         }

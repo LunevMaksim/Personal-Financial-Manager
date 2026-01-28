@@ -9,7 +9,7 @@ public class ConsoleUI {
         menu(scanner, financeManager);
     }
     static void menu(Scanner scanner, FinanceManager financeManager){
-        boolean val = true;
+        boolean val = false;
         while (!val){
             try {
                 System.out.println("1. Добавить транзакцию");
@@ -30,6 +30,7 @@ public class ConsoleUI {
                         break;
                     case 4:
                         val = true;
+                        break;
                     default:
                         System.out.println("Ошибка! Номер команды не найден!");
                         scanner.nextLine();

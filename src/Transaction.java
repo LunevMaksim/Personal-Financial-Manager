@@ -64,7 +64,7 @@ public class Transaction {
                 "id: " + id +
                 ", Дата: " + date +
                 ", Сумма: " + amount +
-                ", Тип: " + type +
+                ", Тип: " + type.getRussianType() +
                 ", Категория: '" + category + '\'' +
                 ", Описание: '" + description + '\'' +
                 '}';

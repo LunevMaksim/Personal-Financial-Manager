@@ -24,6 +24,8 @@ public class FinanceManager {
                 break;
             } catch (InputMismatchException exception){
                 System.out.println("Ошибка! Введено не числовое значение");
+            }
+            finally {
                 scanner.nextLine();
             }
         }
@@ -36,7 +38,6 @@ public class FinanceManager {
             Type mayBeType = Type.fromType(type);
             if (mayBeType == null){
                 System.out.println("Ошибка! Неверный тип транзакции");
-                scanner.nextLine();
             }
             else {
                 trans.setType(mayBeType);
@@ -57,6 +58,10 @@ public class FinanceManager {
     }
 
     public void removeTransaction(Scanner scanner){
+        if (getList().isEmpty()){
+            System.out.println("Список транзакций пуст!");
+            return;
+        }
         int id;
         while (true){
             try {
@@ -87,6 +92,10 @@ public class FinanceManager {
     }
 
     public void searchTransaction(Scanner scanner){
+        if (getList().isEmpty()){
+            System.out.println("Список транзакций пуст!");
+            return;
+        }
         int num = menuForSearch(scanner);
         switch (num){
             case 1:
@@ -100,9 +109,10 @@ public class FinanceManager {
                 break;
             case 2:
                 System.out.print("Введите тип транзакции: ");
-                String type = scanner.nextLine().toLowerCase().trim();
+                String type = scanner.nextLine();
+                Type mayBeType = Type.fromType(type);
                 for (int i = 0; i < getList().size(); i++) {
-                    if (getList().get(i).getType().equals(type)){
+                    if (getList().get(i).getType().equals(mayBeType)){
                         System.out.println(getList().get(i));
                     }
                 }
