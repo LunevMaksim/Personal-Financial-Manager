@@ -6,6 +6,7 @@ public class ConsoleUI {
         System.out.println("===Personal-Financial-Manager===");
         Scanner scanner = new Scanner(System.in);
         FinanceManager financeManager = new FinanceManager();
+        System.out.println("Данные загружены. Всего транзакций: " + financeManager.getList().size());
         menu(scanner, financeManager);
     }
     static void menu(Scanner scanner, FinanceManager financeManager){

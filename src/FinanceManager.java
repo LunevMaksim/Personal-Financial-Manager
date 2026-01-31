@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -8,6 +9,28 @@ import java.util.Scanner;
 public class FinanceManager {
     private List<Transaction> list = new ArrayList<>();
     private int nextId = 1;
+    private FileStorage storage;
+
+    public FinanceManager() {
+        this.storage = new FileStorage();
+        this.list = loadTransactions();
+    }
+
+    public List<Transaction> loadTransactions() {
+        try {
+            List<Transaction> loaded = storage.load();
+            if (!loaded.isEmpty()) {
+                nextId = loaded.stream()
+                        .mapToInt(Transaction::getId)
+                        .max()
+                        .orElse(0) + 1;
+            }
+            return loaded;
+        } catch (IOException e) {
+            System.err.println("Ошибка загрузки данных: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 
     public void addTransaction(Scanner scanner){
         Transaction trans = new Transaction();
@@ -42,6 +65,7 @@ public class FinanceManager {
         trans.setDescription(description);
 
         getList().add(trans);
+        saveTransactions();
         System.out.println("Транзакция успешно добавлена!");
     }
 
@@ -71,9 +95,11 @@ public class FinanceManager {
                 break;
             }
         }
-
         if (!found) {
             System.out.println("Транзакция с id " + id + " не найдена");
+        } else {
+            saveTransactions();
+            System.out.println("Транзакция с id " + id + " удалена!");
         }
     }
 
@@ -136,8 +162,6 @@ public class FinanceManager {
                 System.out.println("Неверный номер команды!");
             } catch (InputMismatchException exception){
                 System.out.println("Ошибка! Введено не числовое значение");
-            }
-            finally {
                 scanner.nextLine();
             }
         }
@@ -155,6 +179,14 @@ public class FinanceManager {
             } finally {
                 scanner.nextLine();
             }
+        }
+    }
+
+    public void saveTransactions() {
+        try {
+            storage.save(list);
+        } catch (IOException e) {
+            System.err.println("Ошибка сохранения данных: " + e.getMessage());
         }
     }
 

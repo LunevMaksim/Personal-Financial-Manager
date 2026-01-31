@@ -1,6 +1,10 @@
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Transaction {
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
     private int id;
     private LocalDateTime date;
     private double amount;
@@ -62,10 +66,30 @@ public class Transaction {
     public String toString() {
         return "Транзакция: " +
                 "id: " + id +
-                ", Дата: " + date +
+                ", Дата: " + date.format(DATE_FORMATTER) +
                 ", Сумма: " + amount +
                 ", Тип: " + type.getRussianType() +
                 ", Категория: '" + category + '\'' +
                 ", Описание: '" + description + '\'';
+    }
+
+    public String toCsvString(){
+        return id + "; " + date.format(DATE_FORMATTER) + "; " + amount + "; " + type.getRussianType() + "; " + category + "; " + description;
+    }
+
+    public static Transaction fromCsvString(String line){
+        String[] parts = line.split("; ");
+        if (parts.length != 6) {
+            throw new IllegalArgumentException("Некорректный формат CSV строки: " + line);
+        }
+
+        int id = Integer.parseInt(parts[0]);
+        LocalDateTime date = LocalDateTime.parse(parts[1], DATE_FORMATTER);
+        double amount = Double.parseDouble(parts[2]);
+        Type type = Type.fromType(parts[3]);
+        String category = parts[4];
+        String description = parts[5];
+
+        return new Transaction(id, date, amount, type, category, description);
     }
 }
