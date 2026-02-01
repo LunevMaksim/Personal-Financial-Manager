@@ -84,9 +84,9 @@ public class FinanceManager {
             }
         }
         boolean found = false;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getId() == id) {
-                list.remove(i);
+        for (int i = 0; i < getList().size(); i++) {
+            if (getList().get(i).getId() == id) {
+                getList().remove(i);
                 found = true;
                 System.out.println("Транзакция с id " + id + " удалена!");
                 break;
@@ -215,6 +215,81 @@ public class FinanceManager {
         }
     }
 
+    public void editTransaction(Scanner scanner){
+        if (getList().isEmpty()){
+            System.out.println("Список транзакций пуст!");
+            return;
+        }
+        int id;
+        while (true){
+            try {
+                System.out.print("Введите айди для редактирования: ");
+                id = scanner.nextInt();
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException exception){
+                System.out.println("Ошибка! Введено не числовое значение");
+                scanner.nextLine();
+            }
+        }
+        for (int i = 0; i < getList().size(); i++) {
+            if (getList().get(i).getId() == id) {
+                System.out.println("Найдена транзакция: " + getList().get(i).getCategory() + ", " + getList().get(i).getAmount() + ", " + getList().get(i).getType() + ", " + getList().get(i).getDescription());
+                int command = menuForEdit(scanner);
+                if (command == 0) {
+                    System.out.println("Редактирование отменено.");
+                    return;
+                }
+                boolean val = false;
+                switch (command){
+                    case 1:
+                        System.out.println("Текущая сумма " + getList().get(i).getAmount());
+                        double newAmount = readDouble(scanner);
+                        getList().get(i).setAmount(newAmount);
+                        val = true;
+                        break;
+                    case 2:
+                        System.out.println("Текущий тип " + getList().get(i).getType());
+                        System.out.print("Введите новый тип: ");
+                        while (true){
+                            String newType = scanner.nextLine();
+                            Type mayBeType = Type.fromType(newType);
+                            if (mayBeType == null){
+                                System.out.println("Ошибка! Неверный тип транзакции");
+                            }
+                            else {
+                                getList().get(i).setType(mayBeType);
+                                break;
+                            }
+                        }
+                        val = true;
+                        break;
+                    case 3:
+                        System.out.println("Текущая категория " + getList().get(i).getCategory());
+                        System.out.print("Введите новую категорию: ");
+                        String newCategory = scanner.nextLine();
+                        getList().get(i).setCategory(newCategory);
+                        val = true;
+                        break;
+                    case 4:
+                        System.out.println("Текущее описание " + getList().get(i).getDescription());
+                        System.out.print("Введите новое описание: ");
+                        String newDescription = scanner.nextLine();
+                        getList().get(i).setDescription(newDescription);
+                        val = true;
+                        break;
+                }
+                if (val){
+                    System.out.println("Транзакция id:" + id + " была успешно изменена");
+                    saveTransactions();
+                }
+                return;
+            }
+        }
+        System.out.println("Транзакция с id " + id + " не найдена");
+    }
+
+
     public void menuForStatistic(Scanner scanner){
         System.out.println("   → 1. Общий баланс\n" +
                 "   → 2. Доходы/расходы\n" +
@@ -248,7 +323,6 @@ public class FinanceManager {
         }
     }
 
-
     public int menuForSearch(Scanner scanner){
         System.out.println("Поиск транзакций:");
         System.out.println("1. По категории");
@@ -268,6 +342,32 @@ public class FinanceManager {
                 scanner.nextLine();
             }
         }
+    }
+
+    public int menuForEdit(Scanner scanner){
+        System.out.println("Что редактируем?");
+        System.out.println("1. Сумму");
+        System.out.println("2. Тип");
+        System.out.println("3. Категорию");
+        System.out.println("4. Описание");
+        System.out.println("0. Отмена");
+        int command;
+        while (true){
+            try {
+                System.out.print("Введите номер команды: ");
+                command = scanner.nextInt();
+                if (command >= 0 && command <= 4){
+                    break;
+                }
+                System.out.println("Ошибка! Неверный ввод команды!");
+            } catch (InputMismatchException exception){
+                System.out.println("Ошибка! Введите числовое значение!");
+            }
+            finally {
+                scanner.nextLine();
+            }
+        }
+        return command;
     }
 
     public double readDouble(Scanner scanner) {

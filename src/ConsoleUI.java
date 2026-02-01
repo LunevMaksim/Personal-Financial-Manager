@@ -18,7 +18,8 @@ public class ConsoleUI {
                 System.out.println("3. Найти транзакцию");
                 System.out.println("4. Показать все транзакции");
                 System.out.println("5. Показать статистику");
-                System.out.println("6. Выход");
+                System.out.println("6. Редактировать транзакцию");
+                System.out.println("7. Выход");
                 System.out.print("Введите номер команды: ");
                 int command = scanner.nextInt();
                 switch (command){
@@ -38,6 +39,9 @@ public class ConsoleUI {
                         financeManager.menuForStatistic(scanner);
                         break;
                     case 6:
+                        financeManager.editTransaction(scanner);
+                        break;
+                    case 7:
                         val = true;
                         break;
                     default:
