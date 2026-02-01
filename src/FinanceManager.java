@@ -1,9 +1,6 @@
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class FinanceManager {
@@ -99,7 +96,6 @@ public class FinanceManager {
             System.out.println("Транзакция с id " + id + " не найдена");
         } else {
             saveTransactions();
-            System.out.println("Транзакция с id " + id + " удалена!");
         }
     }
 
@@ -145,6 +141,113 @@ public class FinanceManager {
             System.out.println(t);
         }
     }
+
+    public void calculateBalance(){
+        if (getList().isEmpty()) {
+            System.out.println("Нет транзакций для статистики.");
+            return;
+        }
+        double balance = 0;
+        for (int i = 0; i < getList().size(); i++) {
+            double amount = getList().get(i).getAmount();
+            if (getList().get(i).getType().getRussianType().equalsIgnoreCase("Доход")){
+                balance += amount;
+            }
+            else {
+                balance -= amount;
+            }
+        }
+        System.out.println("Общий баланс: " + balance);
+    }
+
+    public void getTotalIncome(){
+        if (getList().isEmpty()) {
+            System.out.println("Нет транзакций для статистики.");
+            return;
+        }
+        double getIncome = 0;
+        for (int i = 0; i < getList().size(); i++) {
+            if (getList().get(i).getType() == Type.INCOME){
+                getIncome += getList().get(i).getAmount();
+            }
+        }
+        System.out.println("Доходы составили: " + getIncome);
+    }
+    public void getTotalExpense(){
+        if (getList().isEmpty()) {
+            System.out.println("Нет транзакций для статистики.");
+            return;
+        }
+        double getExpense = 0;
+        for (int i = 0; i < getList().size(); i++) {
+            if (getList().get(i).getType() == Type.EXPENSE){
+                getExpense += getList().get(i).getAmount();
+            }
+        }
+        System.out.println("Расходы составили: " + getExpense);
+    }
+
+    public void getCategoryStats() {
+        if (getList().isEmpty()) {
+            System.out.println("Нет транзакций для статистики.");
+            return;
+        }
+        Map<String, Double> map = new HashMap<>();
+        for (int i = 0; i < getList().size(); i++) {
+            double sum = getList().get(i).getAmount();
+            String category = getList().get(i).getCategory().toLowerCase().trim();
+            if (!map.containsKey(category)){
+                map.put(category, sum);
+            }
+            else {
+                double thisSum = map.get(category);
+                thisSum += sum;
+                map.put(category, thisSum);
+            }
+        }
+
+        int i = 1;
+        for (Map.Entry<String, Double> entry : map.entrySet()) {
+            String categoryName = entry.getKey();
+            categoryName = categoryName.substring(0, 1).toUpperCase() + categoryName.substring(1);
+            System.out.printf("%2d. %-10s %8.2f руб%n",
+                    i++, categoryName, entry.getValue());
+        }
+    }
+
+    public void menuForStatistic(Scanner scanner){
+        System.out.println("   → 1. Общий баланс\n" +
+                "   → 2. Доходы/расходы\n" +
+                "   → 3. Статистика по категориям");
+        int command;
+        while (true){
+            try {
+                System.out.print("Введите номер команды: ");
+                command = scanner.nextInt();
+                if (command >= 1 && command <= 3){
+                    break;
+                }
+                System.out.println("Ошибка! Неверный ввод команды!");
+            } catch (InputMismatchException exception){
+                System.out.println("Ошибка! Введите числовое значение!");
+            }
+            finally {
+                scanner.nextLine();
+            }
+        }
+        switch (command){
+            case 1:
+                calculateBalance();
+                break;
+            case 2:
+                getTotalIncome();
+                getTotalExpense();
+                break;
+            case 3:
+                getCategoryStats();
+        }
+    }
+
 
     public int menuForSearch(Scanner scanner){
         System.out.println("Поиск транзакций:");
